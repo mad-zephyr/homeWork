@@ -125,14 +125,10 @@ function letsSort(array, key, direction = 'asc') {
 
 	for (let i = 0; i < _Arr.length; i++) {
     for (let j = 0; j < _Arr.length - i - 1; j++) {
-
-      if (_Arr[j + 1][key] < _Arr[j][key] && direction === 'asc') {
-        [_Arr[j + 1], _Arr[j]] = [_Arr[j], _Arr[j + 1]]
-      }
-
-      if (_Arr[j + 1][key] > _Arr[j][key] && direction === 'dsc') {
-        [_Arr[j], _Arr[j + 1]] = [_Arr[j + 1], _Arr[j]]
-      }
+  
+      _Arr[j + 1][key] < _Arr[j][key] && direction === 'asc'
+        ? [_Arr[j + 1], _Arr[j]] = [_Arr[j], _Arr[j + 1]]
+        : [_Arr[j], _Arr[j + 1]] = [_Arr[j + 1], _Arr[j]]
     }
   }
   return _Arr
@@ -149,3 +145,4 @@ console.log('resultName_ASC: ', sort(data, 'first_name'))
 console.log('resultAGE_ASC: ', sort(data, 'age'))
 console.log('resultAGE_DSC: ', sort(data, 'age', 'dsc'))
 console.log('resultGender_DSC: ', sort(data, 'gender', 'dsc'))
+console.log('resultID: ', sort(data, 'id', 'dsc'))
