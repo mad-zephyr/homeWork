@@ -104,16 +104,48 @@ const data = [{
   "slogan": "brand granular technologies"
 }]
 
+// function compose(object, func) {
+//   const _data = {...object}
 
-const sortData = (initialData) => {
-	const _data = {...initialData}
+//   return function(second) {
+//     func.call(_data, second)
+//   }
+// }
+// // 1. Sort func [ {name: 'name' age: 18}, {name: 'name', age: 181] by name/age (dsc/asc)
 
-	return function() {
-		return function sort(){
-			console.log(_data)
-		}
-	}
+// const sort = compose(data, sorting)
+
+function compose(initial, callback) {
+  const _Arr = [...initial]
+  return (key) => (direction) => callback(_Arr, key, direction)
 }
 
-const betaData = sortData(data)
-console.log(betaData().sort())
+function letsSort(array, key, direction = 'asc') {
+  const _Arr = [...array]
+
+	for (let i = 0; i < _Arr.length; i++) {
+    for (let j = 0; j < _Arr.length - i - 1; j++) {
+
+      if (_Arr[j + 1][key] < _Arr[j][key] && direction === 'asc') {
+        [_Arr[j + 1], _Arr[j]] = [_Arr[j], _Arr[j + 1]]
+      }
+
+      if (_Arr[j + 1][key] > _Arr[j][key] && direction === 'dsc') {
+        [_Arr[j], _Arr[j + 1]] = [_Arr[j + 1], _Arr[j]]
+      }
+    }
+  }
+  return _Arr
+}
+
+function sort(initial, key, direction) {
+  if (!Array.isArray(initial)) return initial
+  const _data = compose(initial, letsSort)
+  return _data(key)(direction)
+}
+
+console.log('resultName_DCS: ', sort(data, 'first_name', 'dsc'))
+console.log('resultName_ASC: ', sort(data, 'first_name'))
+console.log('resultAGE_ASC: ', sort(data, 'age'))
+console.log('resultAGE_DSC: ', sort(data, 'age', 'dsc'))
+console.log('resultGender_DSC: ', sort(data, 'gender', 'dsc'))
