@@ -116,4 +116,4 @@ const sortData = (initialData) => {
 }
 
 const betaData = sortData(data)
-console.log(betaData().sort())
+console.log(betaData().sort());
