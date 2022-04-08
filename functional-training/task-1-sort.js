@@ -104,17 +104,6 @@ const data = [{
   "slogan": "brand granular technologies"
 }]
 
-// function compose(object, func) {
-//   const _data = {...object}
-
-//   return function(second) {
-//     func.call(_data, second)
-//   }
-// }
-// // 1. Sort func [ {name: 'name' age: 18}, {name: 'name', age: 181] by name/age (dsc/asc)
-
-// const sort = compose(data, sorting)
-
 function compose(initial, callback) {
   const _Arr = [...initial]
   return (key) => (direction) => callback(_Arr, key, direction)
@@ -135,7 +124,6 @@ function letsSort(array, key, direction = 'asc') {
 }
 
 function sort(initial, key, direction) {
-  if (!Array.isArray(initial)) return initial
   const _data = compose(initial, letsSort)
   return _data(key)(direction)
 }

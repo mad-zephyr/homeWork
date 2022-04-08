@@ -1,4 +1,4 @@
-[{
+const data =  [{
   "id": 1,
   "first_name": "Muffin",
   "last_name": "Esslement",
@@ -799,3 +799,76 @@
   "ip_address": "161.149.77.102",
   "slogan": "enable intuitive metrics"
 }]
+
+const config = {
+	acc: [],
+	key: 'age',
+	value: 40,
+}
+const configEvery = {
+	key: 'age',
+	value: 20,
+}
+
+function compose(func, config) {
+	const { key, value, acc } = {...config} 
+
+	return function(accumulator, iterator, currentIndex, array) {
+		return func(accumulator, iterator, currentIndex, array, key, value, acc)
+	}
+}
+
+const filterAction = (accumulator, iterator, currentIndex, array, key, value, acc) =>  {
+	iterator[key] === value && acc.push(iterator)
+	return acc
+}
+
+const everyAction = (accumulator, iterator, currentIndex, array, key, value) =>  {
+	iterator[key] > value && accumulator.push(iterator)
+	
+	return currentIndex === array.length - 1
+		? accumulator.length === array.length
+		: accumulator
+}
+
+const someAction = (accumulator, iterator, currentIndex, array, key, value) =>  {
+	iterator[key] > value && accumulator.push(iterator)
+	
+	return currentIndex === array.length - 1
+		? accumulator.length > 1
+		: accumulator
+}
+
+const findAction = (accumulator, iterator, currentIndex, array, key, value) =>  {
+	iterator[key] === value && accumulator.push(iterator)
+	
+	return currentIndex === array.length - 1
+		? accumulator[0]
+		: accumulator
+}
+
+const findIndexAction = (accumulator, iterator, currentIndex, array, key, value) =>  {
+	iterator[key] === value && accumulator.push(currentIndex)
+	
+	return currentIndex === array.length - 1
+		? accumulator[0]
+		: accumulator
+}
+
+const filter = compose(filterAction, config)
+const every = compose(everyAction, configEvery)
+const some = compose(someAction, configEvery)
+const find = compose(findAction, configEvery)
+const findIndex = compose(findIndexAction, configEvery)
+
+const resultFilter = data.reduce(filter)
+const resultEvery = data.reduce(every, [])
+const resultSome = data.reduce(some, [])
+const resultFind= data.reduce(find, [])
+const resultFindIndex= data.reduce(findIndex, [])
+
+console.log('resultFilter: ', resultFilter)
+console.log('resultEvery: ', resultEvery)
+console.log('resultSome: ', resultSome)
+console.log('resultFind: ', resultFind)
+console.log('resultFindIndex: ', resultFindIndex)
