@@ -1,4 +1,7 @@
-[{
+// TASK 2
+// 2. Implement map, filter, every, some, find, indexOf with .reduce()
+// *****************************************
+const data =  [{
   "id": 1,
   "first_name": "Muffin",
   "last_name": "Esslement",
@@ -799,3 +802,44 @@
   "ip_address": "161.149.77.102",
   "slogan": "enable intuitive metrics"
 }]
+
+function compose(action, config) {
+	return function(rawData) {
+		const _workData = [...rawData]
+
+		const { key, value, condition } = config
+    const response = action(_workData, key, value, condition)
+    return response
+	}
+}
+
+function actionFilter(_workData, key, value, condition) {
+  const acc = []
+	const add = (elem) => acc.push(elem)
+
+	for (const item in _workData) {
+		switch (condition) {
+			case 'equal': _workData[item][key] === value && add(_workData[item])
+				break
+			case 'notEqual': _workData[item][key] !== value && add(_workData[item])
+				break
+			case 'above': _workData[item][key] > value && add(_workData[item])
+				break
+			case 'less': _workData[item][key] < value && add(_workData[item])
+				break
+		}
+	}
+  return acc
+}
+
+const actionFilterConfig = {
+	key: 'age',
+	value: 30,
+	condition: 'equal'
+}
+
+const filter = compose(actionFilter, actionFilterConfig)
+
+const resultFilter = filter(data)
+
+console.log(resultFilter)

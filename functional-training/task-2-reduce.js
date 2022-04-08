@@ -1,4 +1,4 @@
-[{
+const data =  [{
   "id": 1,
   "first_name": "Muffin",
   "last_name": "Esslement",
@@ -799,3 +799,66 @@
   "ip_address": "161.149.77.102",
   "slogan": "enable intuitive metrics"
 }]
+
+const filterAction = (initialData, callBack) => {
+  return initialData.reduce((accumulator, iterator, index, array) => {
+    if (callBack(iterator, index, array)) {
+      accumulator.push(iterator)
+    }
+    return accumulator
+  }, [])
+}
+
+const everyAction = (initialData, callBack) => {
+  return initialData.reduce((accumulator, iterator) => {
+    if (!callBack(iterator)) {
+      accumulator = false
+    }
+    return accumulator
+  }, true)
+}
+
+const someAction = (accumulator, iterator, currentIndex, array, key, value) =>  {
+	iterator[key] > value && accumulator.push(iterator)
+	
+	return currentIndex === array.length - 1
+		? accumulator.length > 1 // return boolean for every in the end of reduce operation
+		: accumulator
+}
+
+const findAction = (accumulator, iterator, currentIndex, array, key, value) =>  {
+	iterator[key] === value && accumulator.push(iterator)
+	
+	return currentIndex === array.length - 1
+		? accumulator[0] // return finded element in the end of reduce operation
+		: accumulator
+}
+
+const findIndexAction = (accumulator, iterator, currentIndex, array, key, value) =>  {
+	iterator[key] === value && accumulator.push(currentIndex)
+	
+	return currentIndex === array.length - 1
+		? accumulator[0]
+		: accumulator
+}
+
+// const filter = compose(filterAction, config)
+// const every = compose(everyAction, configEvery)
+// const some = compose(someAction, configEvery)
+// const find = compose(findAction, configEvery)
+// const findIndex = compose(findIndexAction, configEvery)
+
+// const resultFilter = data.reduce(filter, [])
+// const resultEvery = data.reduce(every, [])
+// const resultSome = data.reduce(some, [])
+// const resultFind= data.reduce(find, [])
+// const resultFindIndex= data.reduce(findIndex, [])
+
+// console.log('resultFilter: ', resultFilter)
+// console.log('resultEvery: ', resultEvery)
+// console.log('resultSome: ', resultSome)
+// console.log('resultFind: ', resultFind)
+// console.log('resultFindIndex: ', resultFindIndex)
+
+console.log(filterAction(data, (dataItem, index) => dataItem.id === 10 && index === 9))
+console.log(everyAction(data, (dataItem, index)=> typeof dataItem.id === 'number'))
