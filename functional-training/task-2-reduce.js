@@ -1,4 +1,4 @@
-[{
+const data =  [{
   "id": 1,
   "first_name": "Muffin",
   "last_name": "Esslement",
@@ -799,3 +799,67 @@
   "ip_address": "161.149.77.102",
   "slogan": "enable intuitive metrics"
 }]
+
+const filterAction = (initialData, callBack) => {
+  return initialData.reduce((accumulator, iterator, index, array) => {
+    if (callBack(iterator, index, array)) {
+      accumulator.push(iterator)
+    }
+    return accumulator
+  }, [])
+}
+
+const everyAction = (initialData, callBack) => {
+  return initialData.reduce((accumulator, iterator) => {
+    if (!callBack(iterator)) {
+      accumulator = false
+    }
+    return accumulator
+  }, true)
+}
+
+const someAction = (initialData, callBack) =>  {
+	return initialData.reduce((accumulator, iterator) => {
+    if (!callBack(iterator)) {
+      accumulator = true
+    }
+    return accumulator
+  }, false)
+}
+
+const findAction = (initialData, callBack) => {
+
+  return initialData.slice(0).reduce((accumulator, iterator, index, array) => {
+    if (callBack(iterator, index, array)) {
+			array.splice(1)
+			return iterator
+    }
+    return null
+  }, [])
+}
+
+const findIndexAction = (initialData, callBack) => {
+	const workData = [...initialData]
+  return workData.reduce((accumulator, iterator, index, array) => {
+    if (callBack(iterator, index, array)) {
+			array.splice(1)
+			return index
+    }
+    return null
+  }, [])
+}
+
+const mapAction = (initialData, callBack) => {
+  return initialData.slice(0).reduce((accumulator, iterator, index, array) => {
+		const iteratorResult = callBack(iterator, index, array)
+    accumulator.push(iteratorResult)
+    return accumulator
+  }, [])
+}
+
+console.log(filterAction(data, (dataItem, index) => dataItem.id === 10 && index === 9))
+console.log(everyAction(data, (dataItem, index) => typeof dataItem.id === 'number'))
+console.log(someAction(data, (dataItem, index) => dataItem.id === 10))
+console.log(findAction(data, (dataItem, index) => dataItem.gender === 'Male'))
+console.log(findIndexAction(data, (dataItem, index) => dataItem.age === 22))
+console.log(mapAction(data, (dataItem, index) => ({ ...dataItem, 'gender': dataItem.gender + 22 })))
