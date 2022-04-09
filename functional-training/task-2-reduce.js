@@ -800,75 +800,66 @@ const data =  [{
   "slogan": "enable intuitive metrics"
 }]
 
-const config = {
-	acc: [],
-	key: 'age',
-	value: 40,
-}
-const configEvery = {
-	key: 'age',
-	value: 20,
-}
-
-function compose(func, config) {
-	const { key, value, acc } = {...config} 
-
-	return function(accumulator, iterator, currentIndex, array) {
-		return func(accumulator, iterator, currentIndex, array, key, value, acc)
-	}
+const filterAction = (initialData, callBack) => {
+  return initialData.reduce((accumulator, iterator, index, array) => {
+    if (callBack(iterator, index, array)) {
+      accumulator.push(iterator)
+    }
+    return accumulator
+  }, [])
 }
 
-const filterAction = (accumulator, iterator, currentIndex, array, key, value, acc) =>  {
-	iterator[key] === value && acc.push(iterator)
-	return acc
+const everyAction = (initialData, callBack) => {
+  return initialData.reduce((accumulator, iterator) => {
+    if (!callBack(iterator)) {
+      accumulator = false
+    }
+    return accumulator
+  }, true)
 }
 
-const everyAction = (accumulator, iterator, currentIndex, array, key, value) =>  {
-	iterator[key] > value && accumulator.push(iterator)
-	
-	return currentIndex === array.length - 1
-		? accumulator.length === array.length
-		: accumulator
+const someAction = (initialData, callBack) =>  {
+	return initialData.reduce((accumulator, iterator) => {
+    if (!callBack(iterator)) {
+      accumulator = true
+    }
+    return accumulator
+  }, false)
 }
 
-const someAction = (accumulator, iterator, currentIndex, array, key, value) =>  {
-	iterator[key] > value && accumulator.push(iterator)
-	
-	return currentIndex === array.length - 1
-		? accumulator.length > 1
-		: accumulator
+const findAction = (initialData, callBack) => {
+
+  return initialData.slice(0).reduce((accumulator, iterator, index, array) => {
+    if (callBack(iterator, index, array)) {
+			array.splice(1)
+			return iterator
+    }
+    return null
+  }, [])
 }
 
-const findAction = (accumulator, iterator, currentIndex, array, key, value) =>  {
-	iterator[key] === value && accumulator.push(iterator)
-	
-	return currentIndex === array.length - 1
-		? accumulator[0]
-		: accumulator
+const findIndexAction = (initialData, callBack) => {
+	const workData = [...initialData]
+  return workData.reduce((accumulator, iterator, index, array) => {
+    if (callBack(iterator, index, array)) {
+			array.splice(1)
+			return index
+    }
+    return null
+  }, [])
 }
 
-const findIndexAction = (accumulator, iterator, currentIndex, array, key, value) =>  {
-	iterator[key] === value && accumulator.push(currentIndex)
-	
-	return currentIndex === array.length - 1
-		? accumulator[0]
-		: accumulator
+const mapAction = (initialData, callBack) => {
+  return initialData.slice(0).reduce((accumulator, iterator, index, array) => {
+		const iteratorResult = callBack(iterator, index, array)
+    accumulator.push(iteratorResult)
+    return accumulator
+  }, [])
 }
 
-const filter = compose(filterAction, config)
-const every = compose(everyAction, configEvery)
-const some = compose(someAction, configEvery)
-const find = compose(findAction, configEvery)
-const findIndex = compose(findIndexAction, configEvery)
-
-const resultFilter = data.reduce(filter)
-const resultEvery = data.reduce(every, [])
-const resultSome = data.reduce(some, [])
-const resultFind= data.reduce(find, [])
-const resultFindIndex= data.reduce(findIndex, [])
-
-console.log('resultFilter: ', resultFilter)
-console.log('resultEvery: ', resultEvery)
-console.log('resultSome: ', resultSome)
-console.log('resultFind: ', resultFind)
-console.log('resultFindIndex: ', resultFindIndex)
+console.log(filterAction(data, (dataItem, index) => dataItem.id === 10 && index === 9))
+console.log(everyAction(data, (dataItem, index) => typeof dataItem.id === 'number'))
+console.log(someAction(data, (dataItem, index) => dataItem.id === 10))
+console.log(findAction(data, (dataItem, index) => dataItem.gender === 'Male'))
+console.log(findIndexAction(data, (dataItem, index) => dataItem.age === 22))
+console.log(mapAction(data, (dataItem, index) => ({ ...dataItem, 'gender': dataItem.gender + 22 })))

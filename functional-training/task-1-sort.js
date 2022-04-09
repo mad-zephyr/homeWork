@@ -104,20 +104,9 @@ const data = [{
   "slogan": "brand granular technologies"
 }]
 
-// function compose(object, func) {
-//   const _data = {...object}
-
-//   return function(second) {
-//     func.call(_data, second)
-//   }
-// }
-// // 1. Sort func [ {name: 'name' age: 18}, {name: 'name', age: 181] by name/age (dsc/asc)
-
-// const sort = compose(data, sorting)
-
 function compose(initial, callback) {
   const _Arr = [...initial]
-  return (key) => (direction) => callback(_Arr, key, direction)
+  return (key, direction) => callback(_Arr, key, direction)
 }
 
 function letsSort(array, key, direction = 'asc') {
@@ -126,14 +115,13 @@ function letsSort(array, key, direction = 'asc') {
 	for (let i = 0; i < _Arr.length; i++) {
     for (let j = 0; j < _Arr.length - i - 1; j++) {
 
-      if (_Arr[j + 1][key] < _Arr[j][key] && direction === 'asc') {
+      if ( _Arr[j + 1][key] < _Arr[j][key] && direction === 'asc') {
         [_Arr[j + 1], _Arr[j]] = [_Arr[j], _Arr[j + 1]]
       }
 
       if (_Arr[j + 1][key] > _Arr[j][key] && direction === 'dsc') {
-        [_Arr[j], _Arr[j + 1]] = [_Arr[j + 1], _Arr[j]]
+        [_Arr[j], _Arr[j + 1]] = [_Arr[j + 1], _Arr[j]] 
       }
-      
     }
   }
   return _Arr
@@ -142,7 +130,7 @@ function letsSort(array, key, direction = 'asc') {
 function sort(initial, key, direction) {
   if (!Array.isArray(initial)) return initial
   const _data = compose(initial, letsSort)
-  return _data(key)(direction)
+  return _data(key, direction)
 }
 
 console.log('resultName_DCS: ', sort(data, 'first_name', 'dsc'))

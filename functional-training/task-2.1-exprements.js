@@ -803,42 +803,43 @@ const data =  [{
   "slogan": "enable intuitive metrics"
 }]
 
-function compose(func, config) {
+function compose(action, config) {
 	return function(rawData) {
 		const _workData = [...rawData]
 
-		const { key, value, acc, condition } = config
-		func.call(_workData, key, value, acc, condition)
-		return acc
+		const { key, value, condition } = config
+    const response = action(_workData, key, value, condition)
+    return response
 	}
 }
 
-function actionFilter(key, value, acc, condition) {
+function actionFilter(_workData, key, value, condition) {
+  const acc = []
 	const add = (elem) => acc.push(elem)
 
-	for (const item in this) {
+	for (const item in _workData) {
 		switch (condition) {
-			case 'equal': this[item][key] === value && add(this[item])
+			case 'equal': _workData[item][key] === value && add(_workData[item])
 				break
-			case 'notEqual': this[item][key] !== value && add(this[item])
+			case 'notEqual': _workData[item][key] !== value && add(_workData[item])
 				break
-			case 'above': this[item][key] > value && add(this[item])
+			case 'above': _workData[item][key] > value && add(_workData[item])
 				break
-			case 'less': this[item][key] < value && add(this[item])
+			case 'less': _workData[item][key] < value && add(_workData[item])
 				break
 		}
 	}
+  return acc
 }
 
 const actionFilterConfig = {
 	key: 'age',
 	value: 30,
-	condition: 'equal',
-	acc: []
+	condition: 'equal'
 }
 
 const filter = compose(actionFilter, actionFilterConfig)
 
-const resultFilter = filter(data)
+const resultFilter = filter(data)//.every(data => data.age === 30) // we can chain here with .reduce or other Array methods
 
 console.log(resultFilter)
