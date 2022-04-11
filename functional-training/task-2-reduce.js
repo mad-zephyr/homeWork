@@ -846,7 +846,7 @@ const findIndexAction = (initialData, callBack) => {
 			return index
     }
     return null
-  }, [])
+  }, null)
 }
 
 const mapAction = (initialData, callBack) => {
@@ -861,5 +861,5 @@ console.log(filterAction(data, (dataItem, index) => dataItem.id === 10 && index 
 console.log(everyAction(data, (dataItem, index) => typeof dataItem.id === 'number'))
 console.log(someAction(data, (dataItem, index) => dataItem.id === 10))
 console.log(findAction(data, (dataItem, index) => dataItem.gender === 'Male'))
-console.log(findIndexAction(data, (dataItem, index) => dataItem.age === 22))
+console.log('findIndexAction:', findIndexAction(data, (dataItem, index) => dataItem.age === 22))
 console.log(mapAction(data, (dataItem, index) => ({ ...dataItem, 'gender': dataItem.gender + 22 })))
